@@ -1,9 +1,6 @@
 name: Widget Tests
 
-on:
-  push:
-    branches:
-      - main  # Modify the branch name as needed
+on: [push]
 
 jobs:
   build:
@@ -16,7 +13,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.x'  # Modify the Flutter version as needed
+          flutter-version: '3.0.2'  # Modify the Flutter version as needed
 
       - name: Install dependencies
         run: flutter pub get
