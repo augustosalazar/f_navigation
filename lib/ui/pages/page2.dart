@@ -10,6 +10,41 @@ class Page2 extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Welcome $name!'),
+        actions: [
+          IconButton(
+              onPressed: () => Get.offNamed("/page1"),
+              icon: const Icon(Icons.logout))
+        ],
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'You have successfully navigated to this page.',
+            ),
+            const SizedBox(height: 20),
+            const Text('Do you want option A or B?'),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () => Get.toNamed("/page3a/?name=$name"),
+                  child: const Text(
+                    'Option A',
+                  ),
+                ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                    onPressed: () => Get.toNamed("/page3b/?name=$name"),
+                    child: const Text(
+                      'Option B',
+                    )),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

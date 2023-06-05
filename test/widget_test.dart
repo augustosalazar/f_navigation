@@ -5,26 +5,71 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:f_navigation/ui/pages/page1.dart';
+import 'package:f_navigation/ui/pages/page2.dart';
+import 'package:f_navigation/ui/pages/page3a.dart';
+import 'package:f_navigation/ui/pages/page3b.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:f_navigation/main.dart';
+import 'package:get/get.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  Widget _buildPageWithNavigation(Widget pageUnderTest,
+      {required String name}) {
+    return GetMaterialApp(
+      initialRoute: '/page3b/?name=$name',
+      getPages: [
+        GetPage(name: '/page3b', page: () => Page3B()),
+      ],
+    );
+  }
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+/*
+  testWidgets('Page3B displays correct app bar title',
+      (WidgetTester tester) async {
+    const name = 'Augusto';
+    await tester.pumpWidget(_buildPageWithNavigation(Page3B(), name: name));
+    await tester.pumpAndSettle();
+    final appBarFinder = find.byType(AppBar);
+    expect(appBarFinder, findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    final titleFinder = find.text('$name Option B');
+    expect(titleFinder, findsOneWidget);
+  });
+*/
+  testWidgets('Page3B displays snackbar when top button is clicked',
+      (WidgetTester tester) async {
+    const name = 'Augusto';
+    await tester.pumpWidget(_buildPageWithNavigation(Page3B(), name: name));
+    await tester.pumpAndSettle();
+
+    final buttonFinder = find.text('Show Top Snackbar');
+    expect(buttonFinder, findsOneWidget);
+
+    await tester.tap(buttonFinder);
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    final snackbarFinder = find.text('This is a snackbar on Top');
+    expect(snackbarFinder, findsOneWidget);
+
+    await tester.pump(const Duration(seconds: 5));
+  });
+
+  testWidgets('Page3B displays snackbar when bottom button is clicked',
+      (WidgetTester tester) async {
+    const name = 'Augusto';
+    await tester.pumpWidget(_buildPageWithNavigation(Page3B(), name: name));
+    await tester.pumpAndSettle();
+
+    final buttonFinder = find.text('Show Botton Snackbar');
+    expect(buttonFinder, findsOneWidget);
+
+    await tester.tap(buttonFinder);
+    await tester.pump();
+
+    final snackbarFinder = find.text('This is a snackbar on Bottom');
+    expect(snackbarFinder, findsOneWidget);
+
+    await tester.pump(const Duration(seconds: 5));
   });
 }
