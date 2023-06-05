@@ -1,0 +1,25 @@
+name: Widget Tests
+
+on:
+  push:
+    branches:
+      - main  # Modify the branch name as needed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'  # Modify the Flutter version as needed
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run widget tests
+        run: flutter test test/widget_test.dart  # Modify the test file path as needed
