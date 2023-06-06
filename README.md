@@ -1,16 +1,5 @@
 # f_navigation
 
-A new Flutter project.
+A small showcase of a route navigation using GetX
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<img src="https://github.com/augustosalazar/f_navigation/assets/4458129/69529ac5-19a7-4270-89dd-eee32b1fc76" width="300" />
