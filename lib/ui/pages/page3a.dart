@@ -56,7 +56,7 @@ class _Page3AState extends State<Page3A> {
                     ],
                   )),
               key: const Key('elevatedButton'),
-              child: const Text('Show Top Snackbar'),
+              child: const Text('Show Bottom Sheet modal'),
             ),
             const SizedBox(height: 20),
           ],
