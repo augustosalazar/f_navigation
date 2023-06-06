@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: '/page3b/?name=Augusto',
+      initialRoute: '/page1',
       getPages: [
         GetPage(name: '/page1', page: () => const Page1()),
         GetPage(name: '/page2', page: () => Page2()),

@@ -46,18 +46,15 @@ class _Page1State extends State<Page1> {
                   ),
                 ),
                 ElevatedButton(
-                    onPressed: () => _opressed(), child: const Text('Continue'))
+                    onPressed: () => _formKey.currentState!.validate()
+                        ? Get.offNamed("/page2/?name=${_controller.text}")
+                        : null,
+                    child: const Text('Continue'))
               ],
             ),
           ),
         ),
       ),
     );
-  }
-
-  _opressed() {
-    if (_formKey.currentState!.validate()) {
-      Get.offNamed("/page2/?name=${_controller.text}");
-    }
   }
 }
