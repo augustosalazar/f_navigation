@@ -2,4 +2,5 @@
 
 A small showcase of a route navigation using GetX
 
-<img src="https://github.com/augustosalazar/f_navigation/assets/4458129/69529ac5-19a7-4270-89dd-eee32b1fc76" width="300" />
+
+![navigation](https://github.com/augustosalazar/f_navigation/assets/4458129/379f4ca2-0ad2-4ba6-bf05-262989247233)
