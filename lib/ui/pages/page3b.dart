@@ -27,7 +27,7 @@ class Page3B extends StatelessWidget {
                 onPressed: () => Get.snackbar(
                     'Hi', 'This is a snackbar on Bottom',
                     snackPosition: SnackPosition.BOTTOM),
-                child: const Text('Show Botton Snackbar'))
+                child: const Text('Show Bottom Snackbar'))
           ],
         ),
       )),

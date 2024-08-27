@@ -78,7 +78,7 @@ void main() {
     await tester.pumpWidget(buildPage3bWithNavigation(name: name));
     await tester.pumpAndSettle();
 
-    final buttonFinder = find.text('Show Botton Snackbar');
+    final buttonFinder = find.text('Show Bottom Snackbar');
     expect(buttonFinder, findsOneWidget);
 
     await tester.tap(buttonFinder);
