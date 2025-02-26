@@ -42,14 +42,42 @@ void main() {
     );
   }
 
+  testWidgets('Clear nav from page2', (WidgetTester tester) async {
+    const name = 'Augusto';
+    await tester.pumpWidget(buildPage1WithNavigation(name: name));
+    await tester.pumpAndSettle();
+    // Ensure the initial state is correct
+
+    expect(find.byType(Page1), findsOneWidget);
+
+    // Enter a name in the text field
+    await tester.enterText(find.byType(TextFormField), 'John');
+    await tester.pump();
+
+    // Submit the form
+    await tester.tap(find.text('Continue'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(Page2), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.logout));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(Page1), findsOneWidget);
+
+    expect(find.byTooltip('Back'), findsNothing);
+  });
+
+  /// Test to verify that Page3B displays the correct AppBar title.
   testWidgets('Page3B displays correct app bar title',
       (WidgetTester tester) async {
     const name = 'Augusto';
     await tester.pumpWidget(buildPage3bWithNavigation(name: name));
     await tester.pumpAndSettle();
+    // Verify that an AppBar is present.
     final appBarFinder = find.byType(AppBar);
     expect(appBarFinder, findsOneWidget);
-
+    // Verify that the AppBar title is correctly rendered.
     final titleFinder = find.text('$name Option B');
     expect(titleFinder, findsOneWidget);
   });
@@ -57,6 +85,7 @@ void main() {
   testWidgets('Page3B displays snackbar when top button is clicked',
       (WidgetTester tester) async {
     const name = 'Augusto';
+
     await tester.pumpWidget(buildPage3bWithNavigation(name: name));
     await tester.pumpAndSettle();
 
@@ -100,7 +129,7 @@ void main() {
     await tester.tap(buttonFinder);
     await tester.pump();
 
-     expect(find.byType(GetSnackBar), findsOneWidget);
+    expect(find.byType(GetSnackBar), findsOneWidget);
 
     await tester.pump(const Duration(seconds: 5));
   });
