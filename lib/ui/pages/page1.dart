@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../widgets/responsive_widget.dart';
+
 class Page1 extends StatefulWidget {
   const Page1({super.key});
 
@@ -13,44 +15,46 @@ class _Page1State extends State<Page1> {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Welcome to this app!'),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text(
-                  'Please enter your name and press the button below to continue.',
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: TextFormField(
-                    textInputAction: TextInputAction.go,
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Name',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
-                      }
-                      return null;
-                    },
+    return ResponsiveContainer(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Welcome to this app!'),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Text(
+                    'Please enter your name and press the button below to continue.',
                   ),
-                ),
-                ElevatedButton(
-                    onPressed: () => _formKey.currentState!.validate()
-                        ? Get.offNamed("/page2/?name=${_controller.text}")
-                        : null,
-                    child: const Text('Continue'))
-              ],
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: TextFormField(
+                      textInputAction: TextInputAction.go,
+                      controller: _controller,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Name',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  ElevatedButton(
+                      onPressed: () => _formKey.currentState!.validate()
+                          ? Get.offNamed("/page2/?name=${_controller.text}")
+                          : null,
+                      child: const Text('Continue'))
+                ],
+              ),
             ),
           ),
         ),
