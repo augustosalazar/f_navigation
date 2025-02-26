@@ -114,14 +114,15 @@ void main() {
     await tester.pumpWidget(buildPage3bWithNavigation(name: name));
     await tester.pumpAndSettle();
 
-    final buttonFinder = find.text('Show Botton Snackbar');
-    expect(buttonFinder, findsOneWidget);
-
-    await tester.tap(buttonFinder);
+    await tester.tap(find.text('Show Bottom Snackbar'));
     await tester.pump();
+    expect(find.byType(GetSnackBar), findsOneWidget);
 
-    final snackbarFinder = find.text('This is a snackbar on Bottom');
-    expect(snackbarFinder, findsOneWidget);
+    await tester.pump(const Duration(seconds: 5));
+
+    await tester.tap(find.text('Show Top Snackbar'));
+    await tester.pump();
+    expect(find.byType(GetSnackBar), findsOneWidget);
 
     await tester.pump(const Duration(seconds: 5));
   });
