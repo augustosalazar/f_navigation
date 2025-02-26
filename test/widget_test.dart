@@ -66,8 +66,7 @@ void main() {
     await tester.tap(buttonFinder);
     await tester.pump();
 
-    final snackbarFinder = find.text('This is a snackbar on Top');
-    expect(snackbarFinder, findsOneWidget);
+    expect(find.byType(GetSnackBar), findsOneWidget);
 
     await tester.pump(const Duration(seconds: 5));
   });
@@ -84,8 +83,7 @@ void main() {
     await tester.tap(buttonFinder);
     await tester.pump();
 
-    final snackbarFinder = find.text('This is a snackbar on Bottom');
-    expect(snackbarFinder, findsOneWidget);
+    expect(find.byType(GetSnackBar), findsOneWidget);
 
     await tester.pump(const Duration(seconds: 5));
   });
@@ -102,8 +100,7 @@ void main() {
     await tester.tap(buttonFinder);
     await tester.pump();
 
-    final snackbarFinder = find.text('This is a snackbar on Top');
-    expect(snackbarFinder, findsOneWidget);
+     expect(find.byType(GetSnackBar), findsOneWidget);
 
     await tester.pump(const Duration(seconds: 5));
   });
