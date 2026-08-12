@@ -18,22 +18,27 @@ class _Page1State extends State<Page1> {
     return ResponsiveContainer(
       child: Scaffold(
         appBar: AppBar(
+          key: const Key('page1AppBar'),
           title: const Text('Welcome to this app!'),
         ),
         body: Center(
+          key: const Key('page1Body'),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Form(
               key: _formKey,
               child: Column(
+                key: const Key('page1Column'),
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const Text(
                     'Please enter your name and press the button below to continue.',
+                    key: Key('page1InstructionsText'),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: TextFormField(
+                      key: const Key('page1NameField'),
                       textInputAction: TextInputAction.go,
                       controller: _controller,
                       decoration: const InputDecoration(
@@ -49,6 +54,7 @@ class _Page1State extends State<Page1> {
                     ),
                   ),
                   ElevatedButton(
+                      key: const Key('page1ContinueButton'),
                       onPressed: () => _formKey.currentState!.validate()
                           ? Get.offNamed("/page2/?name=${_controller.text}")
                           : null,

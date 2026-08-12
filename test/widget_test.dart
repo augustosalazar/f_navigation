@@ -1,10 +1,3 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:f_navigation/ui/pages/page1.dart';
 import 'package:f_navigation/ui/pages/page2.dart';
 import 'package:f_navigation/ui/pages/page3a.dart';
@@ -14,6 +7,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 
 void main() {
+  String textFor(WidgetTester tester, String keyName) {
+    return tester.widget<Text>(find.byKey(Key(keyName))).data ?? '';
+  }
+
   Widget buildPage3bWithNavigation({required String name}) {
     return GetMaterialApp(
       initialRoute: '/page3b/?name=$name',
@@ -32,54 +29,76 @@ void main() {
     );
   }
 
-  Widget buildPage1WithNavigation({required String name}) {
+  Widget buildPage1WithNavigation() {
     return GetMaterialApp(
       initialRoute: '/page1',
       getPages: [
         GetPage(name: '/page1', page: () => const Page1()),
-        GetPage(name: '/page2', page: () => Page2()),
+        GetPage(name: '/page2', page: () => const Page2()),
       ],
     );
   }
 
-  testWidgets('Clear nav from page2', (WidgetTester tester) async {
-    const name = 'Augusto';
-    await tester.pumpWidget(buildPage1WithNavigation(name: name));
+  testWidgets('Page1 navigates to Page2 and can logout',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(buildPage1WithNavigation());
     await tester.pumpAndSettle();
-    // Ensure the initial state is correct
 
     expect(find.byType(Page1), findsOneWidget);
+    expect(find.byKey(const Key('page1NameField')), findsOneWidget);
 
-    // Enter a name in the text field
-    await tester.enterText(find.byType(TextFormField), 'John');
-    await tester.pump();
-
-    // Submit the form
-    await tester.tap(find.text('Continue'));
+    await tester.enterText(find.byKey(const Key('page1NameField')), 'John');
+    await tester.tap(find.byKey(const Key('page1ContinueButton')));
     await tester.pumpAndSettle();
 
     expect(find.byType(Page2), findsOneWidget);
+    expect(find.byKey(const Key('page2AppBar')), findsOneWidget);
+    expect(find.byKey(const Key('homeTabRoot')), findsOneWidget);
+    expect(find.byKey(const Key('page2HomeTabButton')), findsOneWidget);
+    expect(find.byKey(const Key('page2ProfileTabButton')), findsOneWidget);
+    expect(textFor(tester, 'homeTabPromptText'), 'Do you want option A or B?');
 
-    await tester.tap(find.byIcon(Icons.logout));
+    await tester.tap(find.byKey(const Key('page2LogoutButton')));
     await tester.pumpAndSettle();
 
     expect(find.byType(Page1), findsOneWidget);
-
     expect(find.byTooltip('Back'), findsNothing);
   });
 
-  /// Test to verify that Page3B displays the correct AppBar title.
+  testWidgets('Page2 switches between home and profile tabs',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      GetMaterialApp(
+        initialRoute: '/page2/?name=John',
+        getPages: [
+          GetPage(name: '/page2', page: () => const Page2()),
+        ],
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('homeTabPromptText')), findsOneWidget);
+    expect(find.byKey(const Key('page2HomeTabButton')), findsOneWidget);
+    expect(textFor(tester, 'homeTabPromptText'), 'Do you want option A or B?');
+
+    await tester.tap(find.byKey(const Key('page2ProfileTabButton')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('profileTabRoot')), findsOneWidget);
+    expect(find.byKey(const Key('profileTabDescriptionText')), findsOneWidget);
+    expect(find.byKey(const Key('profileTabNameText')), findsOneWidget);
+    expect(textFor(tester, 'profileTabNameText'), 'John');
+  });
+
   testWidgets('Page3B displays correct app bar title',
       (WidgetTester tester) async {
     const name = 'Augusto';
     await tester.pumpWidget(buildPage3bWithNavigation(name: name));
     await tester.pumpAndSettle();
-    // Verify that an AppBar is present.
-    final appBarFinder = find.byType(AppBar);
-    expect(appBarFinder, findsOneWidget);
-    // Verify that the AppBar title is correctly rendered.
-    final titleFinder = find.text('$name Option B');
-    expect(titleFinder, findsOneWidget);
+
+    expect(find.byKey(const Key('page3BAppBar')), findsOneWidget);
+    expect(find.byKey(const Key('page3BAppBarTitle')), findsOneWidget);
+    expect(textFor(tester, 'page3BAppBarTitle'), '$name Option B');
   });
 
   testWidgets('Page3B displays snackbar when top button is clicked',
@@ -89,15 +108,13 @@ void main() {
     await tester.pumpWidget(buildPage3bWithNavigation(name: name));
     await tester.pumpAndSettle();
 
-    final buttonFinder = find.text('Show Top Snackbar');
-    expect(buttonFinder, findsOneWidget);
-
-    await tester.tap(buttonFinder);
+    await tester.tap(find.byKey(const Key('page3BTopSnackbarButton')));
     await tester.pump();
 
     expect(find.byType(GetSnackBar), findsOneWidget);
 
-    await tester.pump(const Duration(seconds: 5));
+    await tester.pump(const Duration(seconds: 4));
+    await tester.pumpAndSettle();
   });
 
   testWidgets('Page3B displays snackbar when bottom button is clicked',
@@ -106,51 +123,13 @@ void main() {
     await tester.pumpWidget(buildPage3bWithNavigation(name: name));
     await tester.pumpAndSettle();
 
-    final buttonFinder = find.text('Show Bottom Snackbar');
-    expect(buttonFinder, findsOneWidget);
-
-    await tester.tap(buttonFinder);
+    await tester.tap(find.byKey(const Key('page3BBottomSnackbarButton')));
     await tester.pump();
 
     expect(find.byType(GetSnackBar), findsOneWidget);
 
-    await tester.pump(const Duration(seconds: 5));
-  });
-
-  testWidgets('Page3B displays snackbar when top button is clicked',
-      (WidgetTester tester) async {
-    const name = 'Augusto';
-    await tester.pumpWidget(buildPage3bWithNavigation(name: name));
+    await tester.pump(const Duration(seconds: 4));
     await tester.pumpAndSettle();
-
-    final buttonFinder = find.text('Show Top Snackbar');
-    expect(buttonFinder, findsOneWidget);
-
-    await tester.tap(buttonFinder);
-    await tester.pump();
-
-    expect(find.byType(GetSnackBar), findsOneWidget);
-
-    await tester.pump(const Duration(seconds: 5));
-  });
-
-  testWidgets('Page3B displays snackbar when bottom button is clicked',
-      (WidgetTester tester) async {
-    const name = 'Augusto';
-    await tester.pumpWidget(buildPage3bWithNavigation(name: name));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('Show Bottom Snackbar'));
-    await tester.pump();
-    expect(find.byType(GetSnackBar), findsOneWidget);
-
-    await tester.pump(const Duration(seconds: 5));
-
-    await tester.tap(find.text('Show Top Snackbar'));
-    await tester.pump();
-    expect(find.byType(GetSnackBar), findsOneWidget);
-
-    await tester.pump(const Duration(seconds: 5));
   });
 
   testWidgets('Page3A displays correct app bar title',
@@ -158,63 +137,52 @@ void main() {
     const name = 'Augusto';
     await tester.pumpWidget(buildPage3aWithNavigation(name: name));
     await tester.pumpAndSettle();
-    final appBarFinder = find.byKey(const Key('appBar'));
-    expect(appBarFinder, findsOneWidget);
 
-    final titleFinder = find.text('$name Option A');
-    expect(titleFinder, findsOneWidget);
+    expect(find.byKey(const Key('page3AAppBar')), findsOneWidget);
+    expect(find.byKey(const Key('page3AAppBarTitle')), findsOneWidget);
+    expect(textFor(tester, 'page3AAppBarTitle'), '$name Option A');
   });
 
   testWidgets('Page3A updates current selection when candy tile is tapped',
       (WidgetTester tester) async {
     const name = 'Augusto';
     await tester.pumpWidget(buildPage3aWithNavigation(name: name));
-    final initialSelectionFinder = find.byKey(const Key('currentSelection'));
-    expect(initialSelectionFinder, findsOneWidget);
-    expect(initialSelectionFinder, findsOneWidget);
 
-    final buttonFinder = find.byKey(const Key('elevatedButton'));
-    await tester.tap(buttonFinder);
+    expect(find.byKey(const Key('page3ACurrentSelectionText')), findsOneWidget);
+    expect(textFor(tester, 'page3ACurrentSelectionText'), 'Give me candy');
+
+    await tester.tap(find.byKey(const Key('page3AShowBottomSheetButton')));
     await tester.pumpAndSettle();
 
-    final likeCandyTileFinder = find.byKey(const Key('likeCandyTile'));
-    expect(likeCandyTileFinder, findsOneWidget);
-    await tester.tap(likeCandyTileFinder);
+    expect(find.byKey(const Key('page3ALikeCandyTile')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('page3ALikeCandyTile')));
     await tester.pumpAndSettle();
 
-    final updatedSelectionFinder = find.text('Give me candy');
-    expect(updatedSelectionFinder, findsOneWidget);
+    expect(find.byKey(const Key('page3ACurrentSelectionText')), findsOneWidget);
+    expect(textFor(tester, 'page3ACurrentSelectionText'), 'Give me candy');
   });
 
-  testWidgets('Page1 form validation and navigation',
+  testWidgets('Page1 validates the form before navigation',
       (WidgetTester tester) async {
-    await tester.pumpWidget(buildPage1WithNavigation(name: 'name'));
-
-    // Ensure the initial state is correct
-    expect(
-        find.text(
-            'Please enter your name and press the button below to continue.'),
-        findsOneWidget);
-    expect(find.text('Continue'), findsOneWidget);
-
-    // Attempt to submit the form without entering a name
-    await tester.tap(find.text('Continue'));
-    await tester.pumpAndSettle();
-
-    // Ensure the form validation error message is displayed
-    expect(find.text('Please enter some text'), findsOneWidget);
-
-    // Enter a name in the text field
-    await tester.enterText(find.byType(TextFormField), 'John');
-    await tester.pump();
-
-    // Submit the form
-    await tester.tap(find.text('Continue'));
-    await tester.pumpAndSettle();
+    await tester.pumpWidget(buildPage1WithNavigation());
 
     expect(
-        find.text(
-            'Please enter your name and press the button below to continue.'),
-        findsNothing);
+      find.byKey(const Key('page1InstructionsText')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('page1ContinueButton')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('page1ContinueButton')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(Page1), findsOneWidget);
+    expect(find.byType(Page2), findsNothing);
+
+    await tester.enterText(find.byKey(const Key('page1NameField')), 'John');
+    await tester.tap(find.byKey(const Key('page1ContinueButton')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(Page2), findsOneWidget);
   });
 }

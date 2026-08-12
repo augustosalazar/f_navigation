@@ -1,53 +1,73 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../widgets/home_tab.dart';
+import '../widgets/profile_tab.dart';
 import '../widgets/responsive_widget.dart';
 
-class Page2 extends StatelessWidget {
-  Page2({super.key});
-  final String? name = Get.parameters['name'];
+class Page2 extends StatefulWidget {
+  const Page2({super.key});
+
+  @override
+  State<Page2> createState() => _Page2State();
+}
+
+class _Page2State extends State<Page2> {
+  int _currentIndex = 0;
+  late final String? _name;
+
+  @override
+  void initState() {
+    super.initState();
+    _name = Get.parameters['name'];
+  }
 
   @override
   Widget build(BuildContext context) {
+    final pages = <Widget>[
+      HomeTab(name: _name),
+      ProfileTab(name: _name),
+    ];
+
+    final titles = <String>[
+      'Welcome ${_name ?? ''}!',
+      'Profile',
+    ];
+
     return ResponsiveContainer(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Welcome $name!'),
+          key: const Key('page2AppBar'),
+          title: Text(titles[_currentIndex]),
           actions: [
             IconButton(
-                onPressed: () => Get.offNamed("/page1"),
-                icon: const Icon(Icons.logout))
+              key: const Key('page2LogoutButton'),
+              onPressed: () => Get.offNamed('/page1'),
+              icon: const Icon(Icons.logout),
+            ),
           ],
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'You have successfully navigated to this page.',
-              ),
-              const SizedBox(height: 20),
-              const Text('Do you want option A or B?'),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () => Get.toNamed("/page3a/?name=$name"),
-                    child: const Text(
-                      'Option A',
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                  ElevatedButton(
-                      onPressed: () => Get.toNamed("/page3b/?name=$name"),
-                      child: const Text(
-                        'Option B',
-                      )),
-                ],
-              ),
-            ],
-          ),
+        body: IndexedStack(
+          key: const Key('page2Body'),
+          index: _currentIndex,
+          children: pages,
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          key: const Key('page2BottomNavigation'),
+          currentIndex: _currentIndex,
+          onTap: (index) => setState(() => _currentIndex = index),
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined, key: Key('page2HomeTabButton')),
+              activeIcon: Icon(Icons.home, key: Key('page2HomeTabButton')),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline, key: Key('page2ProfileTabButton')),
+              activeIcon: Icon(Icons.person, key: Key('page2ProfileTabButton')),
+              label: 'Profile',
+            ),
+          ],
         ),
       ),
     );

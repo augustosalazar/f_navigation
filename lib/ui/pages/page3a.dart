@@ -19,26 +19,41 @@ class _Page3AState extends State<Page3A> {
   Widget build(BuildContext context) {
     return ResponsiveContainer(
       child: Scaffold(
-        appBar: AppBar(title: Text('$name Option A'), key: const Key('appBar')),
+        appBar: AppBar(
+          key: const Key('page3AAppBar'),
+          title: Text(
+            '$name Option A',
+            key: const Key('page3AAppBarTitle'),
+          ),
+        ),
         body: Center(
+            key: const Key('page3ABody'),
             child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
+            key: const Key('page3AColumn'),
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Botton Sheet modal.'),
+              const Text(
+                'Botton Sheet modal.',
+                key: Key('page3ADescriptionText'),
+              ),
               const SizedBox(height: 20),
-              Text(currentSelection, key: const Key('currentSelection')),
+              Text(
+                currentSelection,
+                key: const Key('page3ACurrentSelectionText'),
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => Get.bottomSheet(
                     backgroundColor: Colors.white,
                     Wrap(
+                      key: const Key('page3ABottomSheet'),
                       children: <Widget>[
                         ListTile(
                             leading: const Icon(Icons.food_bank),
                             title: const Text('I like candy'),
-                            key: const Key('likeCandyTile'),
+                            key: const Key('page3ALikeCandyTile'),
                             onTap: () {
                               setState(() {
                                 currentSelection = 'Give me candy';
@@ -46,7 +61,7 @@ class _Page3AState extends State<Page3A> {
                               Get.back();
                             }),
                         ListTile(
-                          key: const Key('noCandyTile'),
+                          key: const Key('page3ANoCandyTile'),
                           leading: const Icon(Icons.close),
                           title: const Text('I don´t like candy'),
                           onTap: () {
@@ -58,7 +73,7 @@ class _Page3AState extends State<Page3A> {
                         ),
                       ],
                     )),
-                key: const Key('elevatedButton'),
+                key: const Key('page3AShowBottomSheetButton'),
                 child: const Text('Show Bottom Sheet modal'),
               ),
               const SizedBox(height: 20),

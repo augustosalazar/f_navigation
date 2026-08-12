@@ -6,44 +6,53 @@ import 'package:integration_test/integration_test.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets("Basic integration test", (WidgetTester tester) async {
+  String textFor(WidgetTester tester, String keyName) {
+    return tester.widget<Text>(find.byKey(Key(keyName))).data ?? '';
+  }
+
+  testWidgets('App flow integration test', (WidgetTester tester) async {
     await tester.pumpWidget(const MyApp());
-
-    // ensure we are on page1
-    expect(
-        find.text(
-            'Please enter your name and press the button below to continue.'),
-        findsOneWidget);
-
-    // Enter a name in the text field
-    await tester.enterText(find.byType(TextFormField), 'John');
-    await tester.pump();
-
-    // Submit the form
-    await tester.tap(find.text('Continue'));
     await tester.pumpAndSettle();
 
-    // ensure we are on page2
-    expect(find.text('You have successfully navigated to this page.'),
-        findsOneWidget);
+    expect(find.byKey(const Key('page1InstructionsText')), findsOneWidget);
+    expect(find.byKey(const Key('page1NameField')), findsOneWidget);
+    expect(find.byKey(const Key('page1ContinueButton')), findsOneWidget);
 
-    await tester.tap(find.text('Option A'));
+    await tester.enterText(find.byKey(const Key('page1NameField')), 'John');
+    await tester.tap(find.byKey(const Key('page1ContinueButton')));
     await tester.pumpAndSettle();
 
-    // ensure we are on page3a
-    final titleFinder = find.text('John Option A');
-    expect(titleFinder, findsOneWidget);
+    expect(find.byKey(const Key('page2AppBar')), findsOneWidget);
+    expect(find.byKey(const Key('homeTabRoot')), findsOneWidget);
+    expect(find.byKey(const Key('homeTabOptionAButton')), findsOneWidget);
+    expect(textFor(tester, 'homeTabPromptText'), 'Do you want option A or B?');
 
-    final buttonFinder = find.byKey(const Key('elevatedButton'));
-    await tester.tap(buttonFinder);
+    await tester.tap(find.byKey(const Key('page2ProfileTabButton')));
     await tester.pumpAndSettle();
 
-    final likeCandyTileFinder = find.byKey(const Key('likeCandyTile'));
-    expect(likeCandyTileFinder, findsOneWidget);
-    await tester.tap(likeCandyTileFinder);
+    expect(find.byKey(const Key('profileTabRoot')), findsOneWidget);
+    expect(find.byKey(const Key('profileTabNameText')), findsOneWidget);
+    expect(textFor(tester, 'profileTabNameText'), 'John');
+
+    await tester.tap(find.byKey(const Key('page2HomeTabButton')));
     await tester.pumpAndSettle();
 
-    final updatedSelectionFinder = find.text('Give me candy');
-    expect(updatedSelectionFinder, findsOneWidget);
+    await tester.tap(find.byKey(const Key('homeTabOptionAButton')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('page3AAppBar')), findsOneWidget);
+    expect(find.byKey(const Key('page3AAppBarTitle')), findsOneWidget);
+    expect(textFor(tester, 'page3AAppBarTitle'), 'John Option A');
+
+    await tester.tap(find.byKey(const Key('page3AShowBottomSheetButton')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('page3ALikeCandyTile')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('page3ALikeCandyTile')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('page3ACurrentSelectionText')), findsOneWidget);
+    expect(textFor(tester, 'page3ACurrentSelectionText'), 'Give me candy');
   });
 }
